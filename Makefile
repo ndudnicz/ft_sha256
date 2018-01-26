@@ -2,7 +2,7 @@ NAME = ft_md5
 
 CC = gcc
 
-FLAGS = -Werror -Wextra -Wall
+FLAGS = -Wextra -Wall #-Werror
 
 PATH_SRC = src
 
@@ -10,25 +10,29 @@ PATH_OBJ = obj
 
 PATH_INCLUDES = includes/
 
-SRC =	main.c
+SRC =	main.c \
+		error.c \
+		options.c \
+		read_input.c \
+		map_file.c
 
 OBJ = $(SRC:%.c=obj/%.o)
 
 all: $(NAME)
 
-$(NAME): obj $(OBJ)
-	$(CC) $(FLAGS) -o $@ $(OBJ) -I includes
+$(NAME): $(OBJ)
+	make -C libft
+	$(CC) $(FLAGS) -o $@ $(OBJ) -L. -lft -L. -lftasm
 
 $(PATH_OBJ)/%.o: $(PATH_SRC)/%.c
-	$(CC) $(FLAGS) -o $@ -c $< -I includes
-
-obj:
-	mkdir -p obj/
+	$(CC) $(FLAGS) -o $@ -c $< -I includes -I libft/includes
 
 clean:
-		$(RM) $(OBJ)
+	make clean -C libft
+	$(RM) $(OBJ)
 
 fclean: clean
-		$(RM) $(NAME) libft_malloc.so
+	make fclean -C libft
+	$(RM) $(NAME) libft_malloc.so
 
 re: clean fclean all
