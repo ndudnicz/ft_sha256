@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ "$(uname -s)" = "Darwin" ]
+then
+  DIR=macosx
+  HEADER=libftasm_macosx.hh
+else
+  DIR=linux
+  HEADER=libftasm_linux.hh
+fi
+ln -sf "$HEADER" includes/libftasm.h
+ln -sf "$DIR"/ft_putstr.s src/ft_putstr.s
+ln -sf "$DIR"/ft_putstr_fd.s src/ft_putstr_fd.s
+ln -sf "$DIR"/ft_puts.s src/ft_puts.s
+ln -sf "$DIR"/ft_putchar.s src/ft_putchar.s
+ln -sf "$DIR"/ft_putchar_fd.s src/ft_putchar_fd.s
+exit 0

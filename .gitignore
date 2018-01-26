@@ -1,3 +1,4 @@
 ft_md5
 *.o
 a.out
+*.a
