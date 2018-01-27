@@ -61,7 +61,7 @@ hash_this(char *data, t_opt const *options) {
 			uint32_t	tmp = d;
 			d = c;
 			c = b;
-			b = leftrotate((a + f + k[j] + w[g]), r[j]) + b;
+			b = leftrotate((a + f + k[j] + w[g] /* swapbit(w[g]) ? */ ), r[j]) + b;
 			a = tmp;
 		}
 		h0 += a;
