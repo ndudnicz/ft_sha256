@@ -5,6 +5,7 @@
 #include "options.h"
 
 #define ABS(X) X < 0 ? -X : X
+#define SWAP(X) (X << 24 | ((X & 0x0000ff00) << 8) | ((X & 0x00ff0000) >> 8) | X >> 24)
 
 int
 leftrotate(uint32_t m, uint32_t const n) {
@@ -40,18 +41,18 @@ hash_this(char *data, t_opt const *options) {
 		uint32_t	f, g = 0;
 
 		memcpy((void*)w, (void*)&data[i], 64);
-		for (int i = 0; i < 16; ++i) {
-			printf("%08x", w[i]);
-		}
-		printf("\n");
+		// for (int i = 0; i < 16; ++i) {
+		// 	printf("%08x", w[i]);
+		// }
+		// printf("\n");
 		for (__int32_t j = 0; j < 64; ++j) {
-			if (i < 16) {
+			if (j < 16) {
 				f = (b & c) | ((~b) & d);
 				g = j;
-			} else if (i < 32) {
+			} else if (j < 32) {
 				f = (d & b) | ((~d) & c);
 				g = (5 * j + 1) % 16;
-			} else if (i < 48) {
+			} else if (j < 48) {
 				f = b ^ c ^ d;
 				g = (3 * j + 5) % 16;
 			} else {
@@ -61,7 +62,10 @@ hash_this(char *data, t_opt const *options) {
 			uint32_t	tmp = d;
 			d = c;
 			c = b;
+			// printf("x:%08x\n", w[g]);
+			// printf("SWAPx:%08x\n", SWAP(w[g]));
 			b = leftrotate((a + f + k[j] + w[g] /* swapbit(w[g]) ? */ ), r[j]) + b;
+			// b = leftrotate((a + f + k[j] + SWAP(w[g]) /* swapbit(w[g]) ? */ ), r[j]) + b;
 			a = tmp;
 		}
 		h0 += a;
@@ -69,6 +73,7 @@ hash_this(char *data, t_opt const *options) {
 		h2 += c;
 		h3 += d;
 	}
-	printf("%x %x %x %x\n", h0, h1, h2, h3);
+	printf("%08x %08x %08x %08x\n", h0, h1, h2, h3);
+	free(w);
 	return (0);
 }
