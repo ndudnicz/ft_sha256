@@ -1,7 +1,7 @@
 #ifndef MAP_FILE_H
 # define MAP_FILE_H
 
-#include "options.h"
+# include "options.h"
 
 void*	map_file(t_opt *options);
 

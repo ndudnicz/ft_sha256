@@ -14,7 +14,9 @@ SRC =	main.c \
 		error.c \
 		options.c \
 		read_input.c \
-		map_file.c
+		map_file.c \
+		fit_data.c \
+		hash.c
 
 OBJ = $(SRC:%.c=obj/%.o)
 
