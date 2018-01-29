@@ -49,7 +49,7 @@ hash_this(int *data, t_opt const *options) {
 		int32_t	d = h3;
 
 		for (int32_t j = 0; j < 64; j++) {
-			printf("%d %d %d\n", i, r[j], j);
+			// printf("%d %d %d\n", i, r[j], j);
 			if (j <= 15) {
 				f = (b & c) | ((~b) & d);
 				g = j;
