@@ -22,6 +22,6 @@ main(int ac, char **av) {
 	}
 	data = fit_data(data, &opt);
 	// while (1);
-	return (hash_this(data, &opt));
+	return (hash_this((int*)data, &opt));
 	// return (0);
 }
