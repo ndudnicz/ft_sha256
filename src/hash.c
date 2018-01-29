@@ -37,42 +37,50 @@ hash_this(int *data, t_opt const *options) {
 		0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 	};
 	int32_t		r[64] = {
-		7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
-		5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
-		4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-		6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21
+		7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+		5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+		6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 	};
+	int32_t	a = h0;
+	int32_t	b = h1;
+	int32_t	c = h2;
+	int32_t	d = h3;
+	int32_t	tmp = 0;
 	for (int32_t i = 0; i < options->new_size / (int32_t)sizeof(int); i += 16) {
-		int32_t	a = h0;
-		int32_t	b = h1;
-		int32_t	c = h2;
-		int32_t	d = h3;
-
 		for (int32_t j = 0; j < 64; j++) {
-			// printf("%d %d %d\n", i, r[j], j);
 			if (j <= 15) {
-				f = (b & c) | ((~b) & d);
+				f = (b & c) | (~b & d);
 				g = j;
 			} else if (j >= 16 && j <= 31) {
-				f = (d & b) | ((~d) & c);
+				f = (d & b) | (~d & c);
 				g = ((5 * j) + 1) % 16;
 			} else if (j>= 32 && j <= 47) {
 				f = b ^ c ^ d;
 				g = ((3 * j) + 5) % 16;
 			} else {
-				f = c ^ (b | (~d));
+				f = c ^ (b | ~d);
 				g = (7 * j) % 16;
 			}
-			f = f + a + k[j] + data[i + g];
-			a = d;
+			tmp = d;
 			d = c;
 			c = b;
-			b += leftrotate(f, r[j]);
+			b = leftrotate(a + f + k[j] + data[i + g], r[j]) + b;
+			a = tmp;
+			// f = f + a + k[j] + data[i + g];
+			// a = d;
+			// d = c;
+			// c = b;
+			// b += leftrotate(f, r[j]);
 		}
-		h0 += a;
-		h1 += b;
-		h2 += c;
-		h3 += d;
+		h0 = h0 + a;
+		h1 = h1 + b;
+		h2 = h2 + c;
+		h3 = h3 + d;
+		a = h0;
+		b = h1;
+		c = h2;
+		d = h3;
 	}
 	printf("%08x%08x%08x%08x\n", h0, h1, h2, h3);
 	// free(w);
