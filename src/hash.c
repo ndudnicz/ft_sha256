@@ -1,24 +1,26 @@
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <sys/mman.h>
 
 #include "options.h"
 
 #define SWAP(X) (X << 24 | ((X & 0x0000ff00) << 8) | ((X & 0x00ff0000) >> 8) | X >> 24)
-
-int
-leftrotate(int32_t m, int32_t const n) {
+#define LEFTROTATE(X,Y) ((X) << (Y) | (X) >> (32 - (Y)))
+uint32_t
+leftrotate(uint32_t m, uint32_t const n) {
 	return (m << n | m >> (32 - n));
 }
-#include <stdio.h>
+
 int
-hash_this(int *data, t_opt const *options) {
-	int32_t		g, f;
-	int32_t 	h0 = 0x67452301;
-	int32_t 	h1 = 0xEFCDAB89;
-	int32_t 	h2 = 0x98BADCFE;
-	int32_t 	h3 = 0x10325476;
-	int32_t		k[64] = {
+hash_this(uint8_t const *data, t_opt const *options) {
+	uint32_t		g, f;
+	uint32_t 	h0 = 0x67452301;
+	uint32_t 	h1 = 0xEFCDAB89;
+	uint32_t 	h2 = 0x98BADCFE;
+	uint32_t 	h3 = 0x10325476;
+	uint32_t	k[64] = {
 		0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 		0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 		0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -42,36 +44,33 @@ hash_this(int *data, t_opt const *options) {
 		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 		6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 	};
-	int32_t	a = h0;
-	int32_t	b = h1;
-	int32_t	c = h2;
-	int32_t	d = h3;
-	int32_t	tmp = 0;
-	for (int32_t i = 0; i < options->new_size / (int32_t)sizeof(int); i += 16) {
-		for (int32_t j = 0; j < 64; j++) {
-			if (j <= 15) {
+	uint32_t	a = h0;
+	uint32_t	b = h1;
+	uint32_t	c = h2;
+	uint32_t	d = h3;
+	uint32_t	tmp = 0;
+	uint32_t	w[16];
+	for (int32_t offset = 0; offset < options->new_size; offset += 64) {
+		memcpy(w, &data[offset], 64);
+		for (int32_t i = 0; i < 64; i++) {
+			if (i < 16) {
 				f = (b & c) | (~b & d);
-				g = j;
-			} else if (j >= 16 && j <= 31) {
+				g = i;
+			} else if (i < 32) {
 				f = (d & b) | (~d & c);
-				g = ((5 * j) + 1) % 16;
-			} else if (j>= 32 && j <= 47) {
+				g = ((5 * i) + 1) % 16;
+			} else if (i < 48) {
 				f = b ^ c ^ d;
-				g = ((3 * j) + 5) % 16;
+				g = ((3 * i) + 5) % 16;
 			} else {
 				f = c ^ (b | ~d);
-				g = (7 * j) % 16;
+				g = (7 * i) % 16;
 			}
 			tmp = d;
 			d = c;
 			c = b;
-			b = leftrotate(a + f + k[j] + data[i + g], r[j]) + b;
+			b = LEFTROTATE(a + f + k[i] + w[g], r[i]) + b;
 			a = tmp;
-			// f = f + a + k[j] + data[i + g];
-			// a = d;
-			// d = c;
-			// c = b;
-			// b += leftrotate(f, r[j]);
 		}
 		h0 = h0 + a;
 		h1 = h1 + b;
@@ -82,7 +81,10 @@ hash_this(int *data, t_opt const *options) {
 		c = h2;
 		d = h3;
 	}
-	printf("%08x%08x%08x%08x\n", h0, h1, h2, h3);
-	// free(w);
+	printf("%08x%08x%08x%08x\n", SWAP(h0), SWAP(h1), SWAP(h2), SWAP(h3));
+	if (options->options & OPT_FILE)
+		munmap((void*)data, options->size);
+	else
+		free((void*)data);
 	return (0);
 }

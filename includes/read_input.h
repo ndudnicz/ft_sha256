@@ -3,6 +3,6 @@
 
 # define BUFF_SIZE	4096
 
-char	*read_input(void);
+uint8_t	*read_input(void);
 
 #endif /* READ_INPUT_H */
