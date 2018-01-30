@@ -1,1 +1,1 @@
-macosx/ft_putstr_fd.s
+linux/ft_putstr_fd.s

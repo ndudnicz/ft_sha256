@@ -1,1 +1,1 @@
-macosx/ft_putchar.s
+linux/ft_putchar.s

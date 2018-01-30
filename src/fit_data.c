@@ -2,6 +2,7 @@
 #include <string.h>
 #include <limits.h>
 #include <sys/mman.h>
+#include <stdint.h>
 
 #include "options.h"
 

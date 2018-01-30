@@ -1,1 +1,1 @@
-macosx/ft_puts.s
+linux/ft_puts.s

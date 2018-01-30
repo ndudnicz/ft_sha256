@@ -1,1 +1,1 @@
-libftasm_macosx.hh
+libftasm_linux.hh

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <stdint.h>
 
 #include "options.h"
 
@@ -10,7 +11,7 @@
 #define LEFTROTATE(X,Y) ((X) << (Y) | (X) >> (32 - (Y)))
 
 int
-hash_this(uint8_t const *data, t_opt const *options) {
+hash_this(uint8_t *const data, t_opt *const options) {
 	uint32_t	g, f;
 	uint32_t 	h0 = 0x67452301;
 	uint32_t 	h1 = 0xEFCDAB89;
