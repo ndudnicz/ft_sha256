@@ -8,7 +8,10 @@ else
   DIR=linux
   HEADER=libftasm_linux.hh
 fi
-ln -sf "$HEADER" includes/libftasm.h
+cd includes
+ln -sf "$HEADER" libftasm.h
+ln -sf ../libftasm/includes/"$HEADER" ../../includes/libftasm.h
+cd ..
 ln -sf "$DIR"/ft_putstr.s src/ft_putstr.s
 ln -sf "$DIR"/ft_putstr_fd.s src/ft_putstr_fd.s
 ln -sf "$DIR"/ft_puts.s src/ft_puts.s
