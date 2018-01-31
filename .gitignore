@@ -1,4 +1,4 @@
-ft_md5
+ft_256
 *.o
 a.out
 *.a

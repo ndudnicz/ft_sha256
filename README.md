@@ -1,4 +1,4 @@
-md5 implementation in C.
+sha256 implementation in C.
 ```shell
-./ft_md5 < <file> OR ./ft_md5 -f <file>
+./ft_256 < <text_file> OR ./ft_256 -f <file>
 ```
