@@ -7,6 +7,10 @@
 
 #include "options.h"
 
+/*
+** https://en.wikipedia.org/wiki/MD5
+*/
+
 #define SWAP(X) (X << 24 | ((X & 0x0000ff00) << 8) | ((X & 0x00ff0000) >> 8) | X >> 24)
 #define LEFTROTATE(X,Y) ((X) << (Y) | (X) >> (32 - (Y)))
 
