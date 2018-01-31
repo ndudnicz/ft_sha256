@@ -1,2 +1,2 @@
 #!/bin/sh
-openssl dgst -sha256 < $1
+time ./ft_sha256 -f $1 && time openssl dgst -sha256 $1
