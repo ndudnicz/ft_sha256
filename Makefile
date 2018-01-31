@@ -1,8 +1,8 @@
-NAME = ft_md5
+NAME = ft_sha256
 
 CC = gcc
 
-FLAGS = -Wextra -Wall -Werror
+FLAGS = -Wextra -Wall #-Werror
 
 PATH_SRC = src
 

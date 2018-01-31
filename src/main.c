@@ -17,6 +17,9 @@ main(int ac, char **av) {
 	get_options(&opt, &ac, av);
 	if (opt.options & OPT_FILE) {
 		data = (uint8_t*)map_file(&opt);
+		if (data == NULL) {
+			return (1);
+		}
 	} else {
 		data = read_input();
 		opt.size = (uint32_t)strlen((char const*)data);

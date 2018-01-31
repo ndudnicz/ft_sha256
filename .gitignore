@@ -1,5 +1,6 @@
-ft_256
+ft_sha256
 *.o
 a.out
 *.a
 input
+d
