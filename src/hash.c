@@ -12,7 +12,7 @@
 */
 
 #define SWAP(X) (X << 24 | ((X & 0x0000ff00) << 8) | ((X & 0x00ff0000) >> 8) | X >> 24)
-#define RIGHTROTATE(X,Y) ((X) >> (Y) | (X) << (32 - (Y)))
+#define RIGHTROTATE(X,Y) ((X) >> (Y) | (X) << (32 - Y))
 #define RIGHTSH(X, N) (X >> N)
 #define CH(X, Y, Z) ((X & Y) ^ (~X & Z))
 #define MAJ(X, Y, Z) ((X & Y) ^ (X & Z) ^ (Y & Z))
@@ -43,13 +43,19 @@ hash_this(uint8_t *const data, t_opt *const options) {
 		0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
 		0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
 	};
-	// printf("%llu\n", options->new_size);
+	int p[64][4];
+	for (int i = 0; i < 64; ++i){
+		p[i][0] = i - 2;
+		p[i][1] = i - 7;
+		p[i][2] = i - 15;
+		p[i][3] = i - 16;
+	}
 	for (uint64_t offset = 0; offset < (uint64_t)options->new_size / 4; offset += 16) {
 		for (uint32_t i = 0; i < 64; ++i) {
 			if (i < 16) {
 				w[i] = SWAP(((uint32_t*)data)[offset + i]);
 			} else {
-				w[i] = SIG3(w[i - 2]) + w[i - 7] + SIG2(w[i - 15]) + w[i - 16];
+				w[i] = SIG3(w[p[i][0]]) + w[p[i][1]] + SIG2(w[p[i][2]]) + w[p[i][3]];
 			}
 		}
 		a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
