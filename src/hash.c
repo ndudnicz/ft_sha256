@@ -69,7 +69,6 @@ hash_this(uint8_t *const data, t_opt *const options) {
 		p[i][3] = i - 16;
 	}
 	for (uint64_t offset = 0; offset < options->new_size / 4; offset += 16) {
-	printf("%llu\n", offset);
 		for (uint32_t i = 0; i < 64; i += 16) {
 			if (i < 16) {
 				STEP0_15(i, offset, w, data)
