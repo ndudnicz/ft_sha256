@@ -25,9 +25,11 @@ fit_data(uint8_t const *data, t_opt *options) {
 	new_data[options->new_size - 3] = (uint8_t)((fill_size & 0x0000000000ff0000) >> 16);
 	new_data[options->new_size - 2] = (uint8_t)((fill_size & 0x000000000000ff00) >> 8);
 	new_data[options->new_size - 1] = (uint8_t)(fill_size & 0x00000000000000ff);
-	if (options->options & OPT_FILE)
-	munmap((void*)data, options->size);
-	else
-	free((void*)data);
+	if (options->options & OPT_FILE) {
+		munmap((void*)data, options->size);
+	}
+	else {
+		free((void*)data);
+	}
 	return (new_data);
 }
