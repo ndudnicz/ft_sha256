@@ -20,6 +20,7 @@
 #define SIG1(X) (RIGHTROTATE((X), 6) ^ RIGHTROTATE((X), 11) ^ RIGHTROTATE((X), 25))
 #define SIG2(X) (RIGHTROTATE((X), 7) ^ RIGHTROTATE((X), 18) ^ RIGHTSH((X), 3))
 #define SIG3(X) (RIGHTROTATE((X), 17) ^ RIGHTROTATE((X), 19) ^ RIGHTSH((X), 10))
+
 static uint32_t const	k[64] = {
 	0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
 	0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
@@ -38,7 +39,15 @@ static uint32_t const	k[64] = {
 	e = d + t1; \
 	d = c; c = b;  b = a; \
 	a = t1 + t2; \
-} while (0)
+} while (0);
+
+#define STEP0_15(i, offset, w, data) do { \
+	w[i] = SWAP(((uint32_t*)data)[offset + i]); \
+} while (0);
+
+#define STEP16_63(i, w, j, k, l, m) do { \
+	w[i] = SIG3(w[j]) + w[k] + SIG2(w[l]) + w[m]; \
+} while (0);
 
 int
 hash_this(uint8_t *const data, t_opt *const options) {
@@ -60,25 +69,41 @@ hash_this(uint8_t *const data, t_opt *const options) {
 		p[i][3] = i - 16;
 	}
 	for (uint64_t offset = 0; offset < (uint64_t)options->new_size / 4; offset += 16) {
-		for (uint32_t i = 0; i < 64; i += 8) {
+		for (uint32_t i = 0; i < 64; i += 16) {
 			if (i < 16) {
-				w[i] = SWAP(((uint32_t*)data)[offset + i]);
-				w[i+1] = SWAP(((uint32_t*)data)[offset + i+1]);
-				w[i+2] = SWAP(((uint32_t*)data)[offset + i+2]);
-				w[i+3] = SWAP(((uint32_t*)data)[offset + i+3]);
-				w[i+4] = SWAP(((uint32_t*)data)[offset + i+4]);
-				w[i+5] = SWAP(((uint32_t*)data)[offset + i+5]);
-				w[i+6] = SWAP(((uint32_t*)data)[offset + i+6]);
-				w[i+7] = SWAP(((uint32_t*)data)[offset + i+7]);
+				STEP0_15(i, offset, w, data)
+				STEP0_15(i+1, offset, w, data)
+				STEP0_15(i+2, offset, w, data)
+				STEP0_15(i+3, offset, w, data)
+				STEP0_15(i+4, offset, w, data)
+				STEP0_15(i+5, offset, w, data)
+				STEP0_15(i+6, offset, w, data)
+				STEP0_15(i+7, offset, w, data)
+				STEP0_15(i+8, offset, w, data)
+				STEP0_15(i+9, offset, w, data)
+				STEP0_15(i+10, offset, w, data)
+				STEP0_15(i+11, offset, w, data)
+				STEP0_15(i+12, offset, w, data)
+				STEP0_15(i+13, offset, w, data)
+				STEP0_15(i+14, offset, w, data)
+				STEP0_15(i+15, offset, w, data)
 			} else {
-				w[i] = SIG3(w[p[i][0]]) + w[p[i][1]] + SIG2(w[p[i][2]]) + w[p[i][3]];
-				w[i+1] = SIG3(w[p[i+1][0]]) + w[p[i+1][1]] + SIG2(w[p[i+1][2]]) + w[p[i+1][3]];
-				w[i+2] = SIG3(w[p[i+2][0]]) + w[p[i+2][1]] + SIG2(w[p[i+2][2]]) + w[p[i+2][3]];
-				w[i+3] = SIG3(w[p[i+3][0]]) + w[p[i+3][1]] + SIG2(w[p[i+3][2]]) + w[p[i+3][3]];
-				w[i+4] = SIG3(w[p[i+4][0]]) + w[p[i+4][1]] + SIG2(w[p[i+4][2]]) + w[p[i+4][3]];
-				w[i+5] = SIG3(w[p[i+5][0]]) + w[p[i+5][1]] + SIG2(w[p[i+5][2]]) + w[p[i+5][3]];
-				w[i+6] = SIG3(w[p[i+6][0]]) + w[p[i+6][1]] + SIG2(w[p[i+6][2]]) + w[p[i+6][3]];
-				w[i+7] = SIG3(w[p[i+7][0]]) + w[p[i+7][1]] + SIG2(w[p[i+7][2]]) + w[p[i+7][3]];
+				STEP16_63(i, w, p[i][0], p[i][1], p[i][2], p[i][3])
+				STEP16_63(i+1, w, p[i+1][0], p[i+1][1], p[i+1][2], p[i+1][3])
+				STEP16_63(i+2, w, p[i+2][0], p[i+2][1], p[i+2][2], p[i+2][3])
+				STEP16_63(i+3, w, p[i+3][0], p[i+3][1], p[i+3][2], p[i+3][3])
+				STEP16_63(i+4, w, p[i+4][0], p[i+4][1], p[i+4][2], p[i+4][3])
+				STEP16_63(i+5, w, p[i+5][0], p[i+5][1], p[i+5][2], p[i+5][3])
+				STEP16_63(i+6, w, p[i+6][0], p[i+6][1], p[i+6][2], p[i+6][3])
+				STEP16_63(i+7, w, p[i+7][0], p[i+7][1], p[i+7][2], p[i+7][3])
+				STEP16_63(i+8, w, p[i+8][0], p[i+8][1], p[i+8][2], p[i+8][3])
+				STEP16_63(i+9, w, p[i+9][0], p[i+9][1], p[i+9][2], p[i+9][3])
+				STEP16_63(i+10, w, p[i+10][0], p[i+10][1], p[i+10][2], p[i+10][3])
+				STEP16_63(i+11, w, p[i+11][0], p[i+11][1], p[i+11][2], p[i+11][3])
+				STEP16_63(i+12, w, p[i+12][0], p[i+12][1], p[i+12][2], p[i+12][3])
+				STEP16_63(i+13, w, p[i+13][0], p[i+13][1], p[i+13][2], p[i+13][3])
+				STEP16_63(i+14, w, p[i+14][0], p[i+14][1], p[i+14][2], p[i+14][3])
+				STEP16_63(i+15, w, p[i+15][0], p[i+15][1], p[i+15][2], p[i+15][3])
 			}
 		}
 		a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;

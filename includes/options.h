@@ -9,10 +9,10 @@
 # define PARAMS_STR		"f"
 
 typedef struct	s_opt {
-	unsigned char	options;
 	char			*filename;
 	uint64_t		size;
 	uint64_t		new_size;
+	unsigned char	options;
 }				t_opt;
 
 int		get_options(t_opt *options, int *ac, char **av);
