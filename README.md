@@ -1,4 +1,4 @@
-sha256 implementation in C. (in progress)
+sha256 implementation in C.
 ```shell
 ./ft_256 < <text_file> OR ./ft_256 -f <binary_file>
 ```
