@@ -2,7 +2,7 @@ NAME = ft_sha256
 
 CC = gcc
 
-FLAGS = -Wextra -Wall #-Werror -Ofast
+FLAGS = -Wextra -Wall -Werror -Ofast
 
 PATH_SRC = src
 
