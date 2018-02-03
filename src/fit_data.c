@@ -9,7 +9,7 @@
 uint8_t*
 fit_data(uint8_t const *data, t_opt *options) {
 	uint8_t	*new_data = NULL;
-	options->new_size = ((options->size / 64) + 1) * 64;
+	options->new_size = (((options->size + 8) / 64) + 1) * 64;
 	new_data = (uint8_t*)calloc(1, sizeof(uint8_t) * options->new_size);
 	memcpy((void*)new_data, (void*)data, options->size);
 	new_data[options->size] = 0x80;
