@@ -13,7 +13,7 @@
 
 #define SWAP(X) (X << 24 | ((X & 0x0000ff00) << 8) | ((X & 0x00ff0000) >> 8) | X >> 24)
 #define RIGHTROTATE(X,Y) ((X) >> (Y) | (X) << (32 - Y))
-#define RIGHTSH(X, N) ((X) >> (N))
+#define RIGHTSH(X,N) ((X) >> (N))
 #define CH(X, Y, Z) (((X) & (Y)) ^ ((~X) & (Z)))
 #define MAJ(X, Y, Z) (((X) & (Y)) ^ ((X) & (Z)) ^ ((Y) & (Z)))
 #define SIG0(X) (RIGHTROTATE((X), 2) ^ RIGHTROTATE((X), 13) ^ RIGHTROTATE((X), 22))
@@ -61,7 +61,7 @@ hash_this(uint8_t *const data, t_opt *const options) {
 	uint32_t		h6 = 0x1f83d9ab;
 	uint32_t		h7 = 0x5be0cd19;
 	uint32_t		w[64] = {0};
-	int p[64][4];
+	uint32_t		p[64][4];
 	for (int i = 15; i < 64; ++i){
 		p[i][0] = i - 2;
 		p[i][1] = i - 7;
