@@ -35,6 +35,5 @@ clean:
 
 fclean: clean
 	make fclean -C libft
-	$(RM) $(NAME) libft_malloc.so
 
 re: clean fclean all
