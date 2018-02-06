@@ -6,7 +6,28 @@
 
 #include "error.h"
 #include "read_input.h"
-#include "libft.h"
+
+static char*
+ft_strjoin_free(char const *s1, char const *s2, char const a, char const b)
+{
+	char			*new_str;
+	unsigned int	len;
+
+	if (s1 && s2)
+	{
+		len = strlen(s1) + strlen(s2);
+		if (!(new_str = (char*)malloc(sizeof(len + 1))))
+			return (NULL);
+		strcpy(new_str, s1);
+		strcat(new_str, s2);
+		if (a)
+			free((char*)s1);
+		if (b)
+			free((char*)s2);
+		return (new_str);
+	}
+	return (NULL);
+}
 
 uint8_t*
 read_input(void) {

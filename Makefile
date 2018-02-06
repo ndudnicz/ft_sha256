@@ -23,17 +23,14 @@ OBJ = $(SRC:%.c=obj/%.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	make -C libft
-	$(CC) $(FLAGS) -o $@ $(OBJ) -L. -lft -L. -lftasm -lm
+	$(CC) $(FLAGS) -o $@ $(OBJ)
 
 $(PATH_OBJ)/%.o: $(PATH_SRC)/%.c
-	$(CC) $(FLAGS) -o $@ -c $< -I includes -I libft/includes
+	$(CC) $(FLAGS) -o $@ -c $< -I includes
 
 clean:
-	make clean -C libft
 	$(RM) $(OBJ)
 
 fclean: clean
-	make fclean -C libft
 
 re: clean fclean all

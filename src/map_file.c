@@ -5,7 +5,6 @@
 
 #include "options.h"
 #include "error.h"
-#include "libftasm.h"
 
 void*
 map_file(t_opt *options) {

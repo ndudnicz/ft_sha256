@@ -1,1 +1,0 @@
-macosx/ft_putstr_fd.s
