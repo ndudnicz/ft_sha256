@@ -16,10 +16,14 @@
 #define RIGHTSH(X,N) ((X) >> (N))
 #define CH(X, Y, Z) (((X) & (Y)) ^ ((~X) & (Z)))
 #define MAJ(X, Y, Z) (((X) & (Y)) ^ ((X) & (Z)) ^ ((Y) & (Z)))
-#define SIG0(X) (RIGHTROTATE((X), 2) ^ RIGHTROTATE((X), 13) ^ RIGHTROTATE((X), 22))
-#define SIG1(X) (RIGHTROTATE((X), 6) ^ RIGHTROTATE((X), 11) ^ RIGHTROTATE((X), 25))
-#define SIG2(X) (RIGHTROTATE((X), 7) ^ RIGHTROTATE((X), 18) ^ RIGHTSH((X), 3))
-#define SIG3(X) (RIGHTROTATE((X), 17) ^ RIGHTROTATE((X), 19) ^ RIGHTSH((X), 10))
+// #define SIG0(X) (RIGHTROTATE((X), 2) ^ RIGHTROTATE((X), 13) ^ RIGHTROTATE((X), 22))
+// #define SIG1(X) (RIGHTROTATE((X), 6) ^ RIGHTROTATE((X), 11) ^ RIGHTROTATE((X), 25))
+// #define SIG2(X) (RIGHTROTATE((X), 7) ^ RIGHTROTATE((X), 18) ^ RIGHTSH((X), 3))
+// #define SIG3(X) (RIGHTROTATE((X), 17) ^ RIGHTROTATE((X), 19) ^ RIGHTSH((X), 10))
+#define SIG0(X) (((X) >> 2 | (X) << 30) ^ ((X) >> 13 | (X) << 19) ^ ((X) >> 22 | (X) << 10))
+#define SIG1(X) (((X) >> 6 | (X) << 26) ^ ((X) >> 11 | (X) << 21) ^ ((X) >> 25 | (X) << 7))
+#define SIG2(X) (((X) >> 7 | (X) << 25) ^ ((X) >> 18 | (X) << 14) ^ ((X) >> 3))
+#define SIG3(X) (((X) >> 17 | (X) << 15) ^ ((X) >> 19 | (X) << 13) ^ ((X) >> 10))
 
 static uint32_t const	k[64] = {
 	0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
@@ -31,13 +35,26 @@ static uint32_t const	k[64] = {
 	0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
 	0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
 };
-
+/*
 #define YOLO(i, a, b, c, d, e, f, g, h, t1, t2, k, w) do { \
 	t1 = h + SIG1(e) + CH(e, f, g) + k[i] + w[i]; \
 	t2 = SIG0(a) + MAJ(a, b, c); \
 	h = g; g = f; f = e; \
 	e = d + t1; \
 	d = c; c = b;  b = a; \
+	a = t1 + t2; \
+} while (0);
+*/
+#define YOLO(i, a, b, c, d, e, f, g, h, t1, t2, k, w) do { \
+	t1 = h + SIG1(e) + CH(e, f, g) + k[i] + w[i]; \
+	t2 = SIG0(a) + MAJ(a, b, c); \
+	h = g; \
+	g = f; \
+	f = e; \
+	e = d + t1; \
+	d = c; \
+	c = b; \
+	b = a; \
 	a = t1 + t2; \
 } while (0);
 
