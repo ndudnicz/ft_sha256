@@ -13,9 +13,6 @@ fit_data(uint8_t const *data, t_opt *options) {
 	new_data = (uint8_t*)calloc(1, sizeof(uint8_t) * options->new_size);
 	memcpy((void*)new_data, (void*)data, options->size);
 	new_data[options->size] = 0x80;
-	for (int32_t i = 1; i + options->size < options->new_size - 8; ++i) {
-		new_data[i + options->size] = 0;
-	}
 	uint64_t	fill_size = (options->size * 8) % ULLONG_MAX;
 	new_data[options->new_size - 8] = (uint8_t)((fill_size & 0xff00000000000000) >> 56);
 	new_data[options->new_size - 7] = (uint8_t)((fill_size & 0x00ff000000000000) >> 48);
