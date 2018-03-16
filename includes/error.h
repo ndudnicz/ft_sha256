@@ -6,6 +6,7 @@
 # define INVALID_ARG "Invalid argument."
 # define OPEN_FAILED "open() failed."
 # define MMAP_FAILED "mmap() failed."
+# define INVALID_INPUT_FILE "Invaid input file."
 
 int	ft_error(char const *s1, char const *s2, char const *s3, int const ret);
 
