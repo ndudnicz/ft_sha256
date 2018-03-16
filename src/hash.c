@@ -7,19 +7,42 @@
 
 #include "options.h"
 
+
+
 /*
 ** https://fr.wikipedia.org/wiki/SHA-2
 */
 
 #define SWAP(X) (X << 24 | ((X & 0x0000ff00) << 8) | ((X & 0x00ff0000) >> 8) | X >> 24)
 #define RIGHTROTATE(X,Y) ((X) >> (Y) | (X) << (32 - Y))
-#define RIGHTSH(X,N) ((X) >> (N))
+// #define RIGHTSH(X,N) { \
+// 	asm volatile ( \
+// 		"shrl %%cl, %%eax\n\t" \
+// 		: "=a" (X) \
+// 		: "a" (X), "c" (N) \
+// 	); \
+// }
+
+int		RIGHTSH(int p, int n) {
+	asm volatile (
+		"shrl %%cl, %%eax\n\t"
+		: "=a" (p)
+		: "a" (p), "c" (n)
+	);
+	return (p);
+}
+
 #define CH(X, Y, Z) (((X) & (Y)) ^ ((~X) & (Z)))
 #define MAJ(X, Y, Z) (((X) & (Y)) ^ ((X) & (Z)) ^ ((Y) & (Z)))
-#define SIG0(X) (((X) >> 2 | (X) << 30) ^ ((X) >> 13 | (X) << 19) ^ ((X) >> 22 | (X) << 10))
-#define SIG1(X) (((X) >> 6 | (X) << 26) ^ ((X) >> 11 | (X) << 21) ^ ((X) >> 25 | (X) << 7))
-#define SIG2(X) (((X) >> 7 | (X) << 25) ^ ((X) >> 18 | (X) << 14) ^ ((X) >> 3))
-#define SIG3(X) (((X) >> 17 | (X) << 15) ^ ((X) >> 19 | (X) << 13) ^ ((X) >> 10))
+// #define SIG0(X) (((X) >> 2 | (X) << 30) ^ ((X) >> 13 | (X) << 19) ^ ((X) >> 22 | (X) << 10))
+// #define SIG1(X) (((X) >> 6 | (X) << 26) ^ ((X) >> 11 | (X) << 21) ^ ((X) >> 25 | (X) << 7))
+// #define SIG2(X) (((X) >> 7 | (X) << 25) ^ ((X) >> 18 | (X) << 14) ^ ((X) >> 3))
+// #define SIG3(X) (((X) >> 17 | (X) << 15) ^ ((X) >> 19 | (X) << 13) ^ ((X) >> 10))
+
+#define SIG0(X) ((RIGHTSH((X),2) | (X) << 30) ^ (RIGHTSH((X),13) | (X) << 19) ^ (RIGHTSH((X),22) | (X) << 10))
+#define SIG1(X) ((RIGHTSH((X),6) | (X) << 26) ^ (RIGHTSH((X),11) | (X) << 21) ^ (RIGHTSH((X),25) | (X) << 7))
+#define SIG2(X) ((RIGHTSH((X),7) | (X) << 25) ^ (RIGHTSH((X),18) | (X) << 14) ^ (RIGHTSH((X),3)))
+#define SIG3(X) ((RIGHTSH((X),17) | (X) << 15) ^ (RIGHTSH((X),19) | (X) << 13) ^ (RIGHTSH((X),10)))
 
 static uint32_t const	k[64] = {
 	0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
