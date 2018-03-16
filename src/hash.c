@@ -32,7 +32,7 @@ static uint32_t const	k[64] = {
 	0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
 };
 
-#define YOLO(i, a, b, c, d, e, f, g, h, t1, t2, k, w) do { \
+#define YOLO(i, a, b, c, d, e, f, g, h, t1, t2, k, w) { \
 	t1 = h + SIG1(e) + CH(e, f, g) + k[i] + w[i]; \
 	t2 = SIG0(a) + MAJ(a, b, c); \
 	h = g; \
@@ -43,15 +43,15 @@ static uint32_t const	k[64] = {
 	c = b; \
 	b = a; \
 	a = t1 + t2; \
-} while (0);
+}
 
-#define STEP0_15(i, offset, w, data) do { \
+#define STEP0_15(i, offset, w, data) { \
 	w[i] = SWAP(((uint32_t*)data)[offset + i]); \
-} while (0);
+}
 
-#define STEP16_63(i, w, j, k, l, m) do { \
+#define STEP16_63(i, w, j, k, l, m) { \
 	w[i] = SIG3(w[j]) + w[k] + SIG2(w[l]) + w[m]; \
-} while (0);
+}
 
 int
 hash_this(uint8_t *const data, t_opt *const options) {
