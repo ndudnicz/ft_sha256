@@ -23,9 +23,18 @@
 // 	); \
 // }
 
-int		RIGHTSH(int p, int n) {
-	asm volatile (
+static inline int		RIGHTSH(int p, int n) {
+	__asm__ volatile (
 		"shrl %%cl, %%eax\n\t"
+		: "=a" (p)
+		: "a" (p), "c" (n)
+	);
+	return (p);
+}
+
+static inline int		LEFTSH(int p, int n) {
+	__asm__ volatile (
+		"shll %%cl, %%eax\n\t"
 		: "=a" (p)
 		: "a" (p), "c" (n)
 	);
@@ -34,15 +43,11 @@ int		RIGHTSH(int p, int n) {
 
 #define CH(X, Y, Z) (((X) & (Y)) ^ ((~X) & (Z)))
 #define MAJ(X, Y, Z) (((X) & (Y)) ^ ((X) & (Z)) ^ ((Y) & (Z)))
-// #define SIG0(X) (((X) >> 2 | (X) << 30) ^ ((X) >> 13 | (X) << 19) ^ ((X) >> 22 | (X) << 10))
-// #define SIG1(X) (((X) >> 6 | (X) << 26) ^ ((X) >> 11 | (X) << 21) ^ ((X) >> 25 | (X) << 7))
-// #define SIG2(X) (((X) >> 7 | (X) << 25) ^ ((X) >> 18 | (X) << 14) ^ ((X) >> 3))
-// #define SIG3(X) (((X) >> 17 | (X) << 15) ^ ((X) >> 19 | (X) << 13) ^ ((X) >> 10))
 
-#define SIG0(X) ((RIGHTSH((X),2) | (X) << 30) ^ (RIGHTSH((X),13) | (X) << 19) ^ (RIGHTSH((X),22) | (X) << 10))
-#define SIG1(X) ((RIGHTSH((X),6) | (X) << 26) ^ (RIGHTSH((X),11) | (X) << 21) ^ (RIGHTSH((X),25) | (X) << 7))
-#define SIG2(X) ((RIGHTSH((X),7) | (X) << 25) ^ (RIGHTSH((X),18) | (X) << 14) ^ (RIGHTSH((X),3)))
-#define SIG3(X) ((RIGHTSH((X),17) | (X) << 15) ^ (RIGHTSH((X),19) | (X) << 13) ^ (RIGHTSH((X),10)))
+#define SIG0(X) ((RIGHTSH((X),2) | LEFTSH((X),30)) ^ (RIGHTSH((X),13) | LEFTSH((X),19)) ^ (RIGHTSH((X),22) | LEFTSH((X),10)))
+#define SIG1(X) ((RIGHTSH((X),6) | LEFTSH((X),26)) ^ (RIGHTSH((X),11) | LEFTSH((X),21)) ^ (RIGHTSH((X),25) | LEFTSH((X),7)))
+#define SIG2(X) ((RIGHTSH((X),7) | LEFTSH((X),25)) ^ (RIGHTSH((X),18) | LEFTSH((X),14)) ^ (RIGHTSH((X),3)))
+#define SIG3(X) ((RIGHTSH((X),17) | LEFTSH((X),15)) ^ (RIGHTSH((X),19) | LEFTSH((X),13)) ^ (RIGHTSH((X),10)))
 
 static uint32_t const	k[64] = {
 	0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
@@ -98,6 +103,7 @@ hash_this(uint8_t *const data, t_opt *const options) {
 	for (uint64_t offset = 0; offset < options->new_size / 4; offset += 16) {
 		for (uint32_t i = 0; i < 64; i += 16) {
 			if (i < 16) {
+				/* gain ~0s */
 				STEP0_15(i, offset, w, data)
 				STEP0_15(i+1, offset, w, data)
 				STEP0_15(i+2, offset, w, data)
@@ -115,6 +121,7 @@ hash_this(uint8_t *const data, t_opt *const options) {
 				STEP0_15(i+14, offset, w, data)
 				STEP0_15(i+15, offset, w, data)
 			} else {
+				/* gain ~1.3 */
 				STEP16_63(i, w, p[i][0], p[i][1], p[i][2], p[i][3])
 				STEP16_63(i+1, w, p[i+1][0], p[i+1][1], p[i+1][2], p[i+1][3])
 				STEP16_63(i+2, w, p[i+2][0], p[i+2][1], p[i+2][2], p[i+2][3])
@@ -134,6 +141,7 @@ hash_this(uint8_t *const data, t_opt *const options) {
 			}
 		}
 		a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+		/* gain ~2s. */
 		for (uint32_t i = 0; i < 64; i+=16) {
 			YOLO(i, a, b, c, d, e, f, g, h, t1, t2, k, w);
 			YOLO(i+1, a, b, c, d, e, f, g, h, t1, t2, k, w);
