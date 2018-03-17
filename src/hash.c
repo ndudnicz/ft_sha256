@@ -54,26 +54,26 @@ static uint32_t const	k[64] = {
 }
 
 int
-hash_this(uint8_t *const data, t_opt *const options) {
-	uint32_t		a, b, c, d, e, f, g, h, t1, t2;
-	uint32_t		h0 = 0x6a09e667;
-	uint32_t		h1 = 0xbb67ae85;
-	uint32_t		h2 = 0x3c6ef372;
-	uint32_t		h3 = 0xa54ff53a;
-	uint32_t		h4 = 0x510e527f;
-	uint32_t		h5 = 0x9b05688c;
-	uint32_t		h6 = 0x1f83d9ab;
-	uint32_t		h7 = 0x5be0cd19;
-	uint32_t		w[64] = {0};
-	uint32_t		p[64][4];
-	for (int i = 15; i < 64; ++i){
+hash_this(uint_fast8_t *const data, t_opt *const options) {
+	uint_fast32_t		a, b, c, d, e, f, g, h, t1, t2;
+	uint_fast32_t		h0 = 0x6a09e667;
+	uint_fast32_t		h1 = 0xbb67ae85;
+	uint_fast32_t		h2 = 0x3c6ef372;
+	uint_fast32_t		h3 = 0xa54ff53a;
+	uint_fast32_t		h4 = 0x510e527f;
+	uint_fast32_t		h5 = 0x9b05688c;
+	uint_fast32_t		h6 = 0x1f83d9ab;
+	uint_fast32_t		h7 = 0x5be0cd19;
+	uint_fast32_t		w[64] = {0};
+	uint_fast32_t		p[64][4];
+	for (uint_fast8_t i = 15; i < 64; ++i){
 		p[i][0] = i - 2;
 		p[i][1] = i - 7;
 		p[i][2] = i - 15;
 		p[i][3] = i - 16;
 	}
-	for (uint64_t offset = 0; offset < options->new_size / 4; offset += 16) {
-		for (uint32_t i = 0; i < 64; i += 16) {
+	for (uint_fast64_t offset = 0; offset < options->new_size / 4; offset += 16) {
+		for (uint_fast32_t i = 0; i < 64; i += 16) {
 			if (i < 16) {
 				STEP0_15(i, offset, w, data)
 				STEP0_15(i+1, offset, w, data)
@@ -111,7 +111,7 @@ hash_this(uint8_t *const data, t_opt *const options) {
 			}
 		}
 		a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
-		for (uint32_t i = 0; i < 64; i+=16) {
+		for (uint_fast32_t i = 0; i < 64; i+=16) {
 			YOLO(i, a, b, c, d, e, f, g, h, t1, t2, k, w);
 			YOLO(i+1, a, b, c, d, e, f, g, h, t1, t2, k, w);
 			YOLO(i+2, a, b, c, d, e, f, g, h, t1, t2, k, w);
