@@ -4,8 +4,8 @@ $> ./ft_256 < <text_file> OR ./ft_256 -f <binary_file>
 ```
 
 #### Performance on debian 9, FX-8320 8 core:
-me vs OpenSSL (1.1.0f  25 May 2017, sha256 C code compiled) vs OpenSSL (1.1.0f  25 May 2017, sha256 ASM code compiled)
-on commit 8a504fae42d1498afbfb07726f5a9e494863a288
+* me vs OpenSSL (1.1.0f, sha256 C code compiled) vs OpenSSL (1.1.0f, sha256 ASM code compiled)
+* on commit 8a504fae42d1498afbfb07726f5a9e494863a288
 
 ```bash
 $> bash sha256 debian-9.4.0-amd64-netinst.iso
