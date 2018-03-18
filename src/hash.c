@@ -15,16 +15,15 @@
 
 #define SWAP(X) (X << 24 | ((X & 0x0000ff00) << 8) | ((X & 0x00ff0000) >> 8) | X >> 24)
 #define RIGHTROTATE(X,Y) ((X) >> (Y) | (X) << (32 - Y))
-// #define RIGHTSH(X,N) { \
-// 	asm volatile ( \
-// 		"shrl %%cl, %%eax\n\t" \
-// 		: "=a" (X) \
-// 		: "a" (X), "c" (N) \
-// 	); \
-// }
 
-static inline int		RIGHTSH(int p, int n) {
-	__asm__ volatile (
+#ifdef __linux__
+	__always_inline static uint32_t	RIGHTSH(uint32_t p, int const n) {
+#elif __APPLE__
+	__header_always_inline static uint32_t	RIGHTSH(uint32_t p, int n) {
+#else
+# error "OS not supported"
+#endif
+	asm (
 		"shrl %%cl, %%eax\n\t"
 		: "=a" (p)
 		: "a" (p), "c" (n)
@@ -32,8 +31,14 @@ static inline int		RIGHTSH(int p, int n) {
 	return (p);
 }
 
-static inline int		LEFTSH(int p, int n) {
-	__asm__ volatile (
+#ifdef __linux__
+	__always_inline static uint32_t	LEFTSH(uint32_t p, int const n) {
+#elif __APPLE__
+	__header_always_inline static uint32_t	LEFTSH(uint32_t p, int n) {
+#else
+# error "OS not supported"
+#endif
+	asm (
 		"shll %%cl, %%eax\n\t"
 		: "=a" (p)
 		: "a" (p), "c" (n)
