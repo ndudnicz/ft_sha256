@@ -19,10 +19,19 @@
 #define CH(X, Y, Z) (((X) & (Y)) ^ ((~X) & (Z)))
 #define MAJ(X, Y, Z) (((X) & (Y)) ^ ((X) & (Z)) ^ ((Y) & (Z)))
 
-static uint32_t __header_always_inline SIG0(uint32_t const X) {return (((X) >> 2 | (X) << 30) ^ ((X) >> 13 | (X) << 19) ^ ((X) >> 22 | (X) << 10));}
-static uint32_t __header_always_inline SIG1(uint32_t const X) {return (((X) >> 6 | (X) << 26) ^ ((X) >> 11 | (X) << 21) ^ ((X) >> 25 | (X) << 7));}
-static uint32_t __header_always_inline SIG2(uint32_t const X) {return (((X) >> 7 | (X) << 25) ^ ((X) >> 18 | (X) << 14) ^ ((X) >> 3));}
-static uint32_t __header_always_inline SIG3(uint32_t const X) {return (((X) >> 17 | (X) << 15) ^ ((X) >> 19 | (X) << 13) ^ ((X) >> 10));}
+#ifdef __linux__
+__always_inline static uint32_t SIG0(uint32_t const X) {return (((X) >> 2 | (X) << 30) ^ ((X) >> 13 | (X) << 19) ^ ((X) >> 22 | (X) << 10));}
+__always_inline static uint32_t SIG1(uint32_t const X) {return (((X) >> 6 | (X) << 26) ^ ((X) >> 11 | (X) << 21) ^ ((X) >> 25 | (X) << 7));}
+__always_inline static uint32_t SIG2(uint32_t const X) {return (((X) >> 7 | (X) << 25) ^ ((X) >> 18 | (X) << 14) ^ ((X) >> 3));}
+__always_inline static uint32_t SIG3(uint32_t const X) {return (((X) >> 17 | (X) << 15) ^ ((X) >> 19 | (X) << 13) ^ ((X) >> 10));}
+#elif __APPLE__
+__header_always_inline static uint32_t SIG0(uint32_t const X) {return (((X) >> 2 | (X) << 30) ^ ((X) >> 13 | (X) << 19) ^ ((X) >> 22 | (X) << 10));}
+__header_always_inline static uint32_t SIG1(uint32_t const X) {return (((X) >> 6 | (X) << 26) ^ ((X) >> 11 | (X) << 21) ^ ((X) >> 25 | (X) << 7));}
+__header_always_inline static uint32_t SIG2(uint32_t const X) {return (((X) >> 7 | (X) << 25) ^ ((X) >> 18 | (X) << 14) ^ ((X) >> 3));}
+__header_always_inline static uint32_t SIG3(uint32_t const X) {return (((X) >> 17 | (X) << 15) ^ ((X) >> 19 | (X) << 13) ^ ((X) >> 10));}
+#else
+# error "OS not supported"
+#endif
 
 static uint32_t const	k[64] = {
 	0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
