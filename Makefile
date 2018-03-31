@@ -26,7 +26,7 @@ $(NAME): $(OBJ)
 	$(CC) $(FLAGS) -o $@ $(OBJ)
 
 $(PATH_OBJ)/%.o: $(PATH_SRC)/%.c
-	$(CC) $(FLAGS) -o $@ -c $< -I includes
+	$(CC) $(FLAGS) -MMD -o $@ -c $< -I includes
 
 clean:
 	$(RM) $(OBJ)
@@ -34,3 +34,6 @@ clean:
 fclean: clean
 
 re: clean fclean all
+
+-include $(OBJ:.o=.d)
+
