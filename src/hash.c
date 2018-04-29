@@ -66,6 +66,8 @@ hash_this(uint8_t *const data, t_opt *const options) {
 	uint32_t		h7 = 0x5be0cd19;
 	uint32_t		w[64] = {0};
 	uint32_t		p[64][4];
+
+	/* Precalculate STEP16_63 indexes */
 	for (int i = 15; i < 64; ++i){
 		p[i][0] = i - 2;
 		p[i][1] = i - 7;
